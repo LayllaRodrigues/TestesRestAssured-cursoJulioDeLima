@@ -2,18 +2,20 @@ package com.montanha.isolada;
 
 import com.montanha.Pojo.Usuario;
 import com.montanha.Pojo.Viagem;
+import com.montanha.config.Configuracoes;
 import com.montanha.factory.UsuarioDataFactory;
 import com.montanha.factory.ViagemDataFactory;
 import io.restassured.http.ContentType;
+import org.aeonbits.owner.ConfigFactory;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
 
 import static io.restassured.RestAssured.*;
+import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchemaInClasspath;
+import static org.aeonbits.owner.ConfigFactory.create;
 import static org.hamcrest.Matchers.equalTo;
-import static io.restassured.module.jsv.JsonSchemaValidator.*;
-
 
 public class ViagemTeste {
 
@@ -21,10 +23,11 @@ public class ViagemTeste {
 
     @Before
     public void setUp() {
-        // Configurações Rest-assured
-        baseURI="http://localhost";
-        port=8089;
-        basePath="/api";
+        Configuracoes configuracoes = ConfigFactory.create(Configuracoes.class);
+
+        baseURI= configuracoes.baseURI();
+        port= configuracoes.port();
+        basePath= configuracoes.basePath();
 
         Usuario usuarioAdministrador = UsuarioDataFactory.criarUsarioAdministrador();
 
@@ -38,7 +41,6 @@ public class ViagemTeste {
                 .path("data.token");
 
     }
-
     @Test
     public void testCadastroDeViagemValidaRetornaSucesso() throws IOException {
 
