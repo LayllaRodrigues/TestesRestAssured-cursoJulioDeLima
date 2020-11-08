@@ -11,8 +11,8 @@ import org.junit.Test;
 import java.io.IOException;
 
 import static io.restassured.RestAssured.*;
-import static org.hamcrest.Matchers.*;
-
+import static org.hamcrest.Matchers.equalTo;
+import static io.restassured.module.jsv.JsonSchemaValidator.*;
 
 
 public class ViagemTeste {
@@ -40,7 +40,7 @@ public class ViagemTeste {
     }
 
     @Test
-    public void testCadastroDeViagemVaidaRetornaSucesso() throws IOException {
+    public void testCadastroDeViagemValidaRetornaSucesso() throws IOException {
 
         Viagem viagem = ViagemDataFactory.criarViagemValida();
 
@@ -69,6 +69,22 @@ public class ViagemTeste {
         .then()
             .assertThat()
                 .statusCode(400);
+    }
+    @Test
+    public void testCadastroDeViagemValidaContrato() throws IOException {
+
+        Viagem viagem = ViagemDataFactory.criarViagemValida();
+
+        given()
+                .contentType (ContentType.JSON)
+                .body(viagem)
+                .header("Authorization",token)
+        .when()
+                .post("/v1/viagens")
+        .then()
+            .assertThat()
+                .statusCode(201)
+                .body(matchesJsonSchemaInClasspath("schemas/postV1ViagensViagemValida.json"));
     }
 }
 
