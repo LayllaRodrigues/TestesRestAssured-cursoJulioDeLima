@@ -1,18 +1,26 @@
 package com.montanha.factory;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.montanha.Pojo.Viagem;
 
-import com.montanha.Pojo.Viagens;
+import java.io.FileInputStream;
+import java.io.IOException;
 
 public class ViagemDataFactory {
-    public static Viagens criarViagemValida() {
-        Viagens viagens = new Viagens();
 
-        viagens.setAcompanhante("Nelson");
-        viagens.setDataPartida("2021-02-02");
-        viagens.setDataRetorno("2021-02-03");
-        viagens.setLocalDeDestino("Fortaleza");
-        viagens.setRegiao("Norte");
-
-        return viagens;
+    public static Viagem criarViagem() throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        return objectMapper.readValue(new FileInputStream("src/test/resources/requestBody/postV1Viagens.json"),Viagem.class);
     }
+
+    public static Viagem criarViagemValida() throws IOException {
+        return criarViagem();
+    }
+
+    public static Viagem criarViagemSemLocalDeDestino() throws IOException {
+        Viagem viagemSemLocalDeDestino = criarViagem();
+        viagemSemLocalDeDestino.setLocalDeDestino("");
+        return viagemSemLocalDeDestino;
+    }
+
 }

@@ -1,6 +1,6 @@
 package com.montanha.Pojo;
 
-public class Viagens {
+public class Viagem {
 
         private String acompanhante;
         private String dataPartida;

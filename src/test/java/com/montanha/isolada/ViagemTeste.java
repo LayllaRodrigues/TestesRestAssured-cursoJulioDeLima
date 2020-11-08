@@ -1,18 +1,21 @@
 package com.montanha.isolada;
 
 import com.montanha.Pojo.Usuario;
-import com.montanha.Pojo.Viagens;
+import com.montanha.Pojo.Viagem;
 import com.montanha.factory.UsuarioDataFactory;
 import com.montanha.factory.ViagemDataFactory;
 import io.restassured.http.ContentType;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.io.IOException;
+
 import static io.restassured.RestAssured.*;
 import static org.hamcrest.Matchers.*;
 
 
 
-public class ViagensTeste {
+public class ViagemTeste {
 
     private String token;
 
@@ -35,14 +38,15 @@ public class ViagensTeste {
                 .path("data.token");
 
     }
-    @Test
-    public void testCadastroDeViagemVaidaRetornaSucesso() {
 
-        Viagens viagens = ViagemDataFactory.criarViagemValida();
+    @Test
+    public void testCadastroDeViagemVaidaRetornaSucesso() throws IOException {
+
+        Viagem viagem = ViagemDataFactory.criarViagemValida();
 
         given()
             .contentType (ContentType.JSON)
-            .body(viagens)
+            .body(viagem)
             .header("Authorization",token)
         .when()
             .post("/v1/viagens")
@@ -50,6 +54,21 @@ public class ViagensTeste {
             .assertThat()
                 .statusCode(201)
                 .body ("data.localDeDestino", equalTo("Fortaleza"));
+    }
+
+    @Test
+    public void testViagemSemLocalDeDestino() throws IOException {
+        Viagem viagemSemLocalDeDestino = ViagemDataFactory.criarViagemSemLocalDeDestino();
+
+        given()
+            .contentType(ContentType.JSON)
+            .body(viagemSemLocalDeDestino)
+            .header("Authorization",token)
+        .when()
+            .post("/v1/viagens")
+        .then()
+            .assertThat()
+                .statusCode(400);
     }
 }
 
